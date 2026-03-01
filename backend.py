@@ -51,15 +51,14 @@ app = FastAPI(title="NEO Data API", description="Returns NEO info, orbital data,
 raster = None
 
 @app.on_event("startup")
-async def startup_event():
+def load_raster():
     global raster
     try:
-        file_id = "1Kxmd--ix7QcC7REDIh62ojuXrz7zqn5x"
-        gdown.download(f"https://drive.google.com/uc?id={file_id}", "population.tif", quiet=False, fuzzy=True)
         raster = rasterio.open("population.tif")
-        print("✅ Raster loaded successfully")
+        print("Raster loaded")
     except Exception as e:
-        print(f"❌ Failed to load raster: {e}")
+        print("Raster failed:", e)
+        raster = None
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -292,8 +291,11 @@ def population_in_circle(raster_path, lon, lat, radius_km, density=False):
     radius_km : float : radius in kilometers
     density : bool : True if raster stores density/km², False if population counts
     """
+    global raster
+
     if raster is None:
         return 0.0
+    
     raster = rasterio.open(raster_path)
 
     # Transform lon/lat -> raster CRS
