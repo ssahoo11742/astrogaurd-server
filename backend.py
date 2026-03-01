@@ -27,15 +27,15 @@ import requests
 
 import requests
 
-# file_id = "1Kxmd--ix7QcC7REDIh62ojuXrz7zqn5x"
-# destination = "population.tif"
-# url = f"https://drive.google.com/uc?export=download&id={file_id}&confirm=t"
+file_id = "1Kxmd--ix7QcC7REDIh62ojuXrz7zqn5x"
+destination = "population.tif"
+url = f"https://drive.google.com/uc?export=download&id={file_id}&confirm=t"
 
-# url = f'https://drive.google.com/file/d/{file_id}/view?usp=sharing'
-# output_path = "population.tif"
+url = f'https://drive.google.com/file/d/{file_id}/view?usp=sharing'
+output_path = "population.tif"
 
-# gdown.download(url, output_path, quiet=False, fuzzy=True)
-# print(f"File downloaded to: {output_path}")
+gdown.download(url, output_path, quiet=False, fuzzy=True)
+print(f"File downloaded to: {output_path}")
 
 
 
