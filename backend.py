@@ -336,7 +336,7 @@ def raw_impact_effects(diameter, density, velocity, angle, distance, water):
     density = int(density)
     url = f"https://impact.ese.ic.ac.uk/ImpactEarth/cgi-bin/crater.cgi?dist={distance}&distanceUnits=1&diam={diameter}&diameterUnits=1&pdens={density}&pdens_select=0&vel={velocity}&velocityUnits=1&theta={angle}&tdens={1000 if water else 5515}&wdepth=9000&wdepthUnits=1"
     print(url)
-    response = requests.get(url)
+    response = requests.get(url, verify=False)
     html_content = response.text
     soup = BeautifulSoup(html_content, "html.parser")
 
