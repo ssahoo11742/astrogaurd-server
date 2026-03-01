@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+requests
+numpy
+beautifulsoup4
+rasterio
+shapely
+geopandas
+pyproj
+gdown
