@@ -27,32 +27,47 @@ import requests
 
 import requests
 
-file_id = "1Kxmd--ix7QcC7REDIh62ojuXrz7zqn5x"
-destination = "population.tif"
-url = f"https://drive.google.com/uc?export=download&id={file_id}&confirm=t"
+# file_id = "1Kxmd--ix7QcC7REDIh62ojuXrz7zqn5x"
+# destination = "population.tif"
+# url = f"https://drive.google.com/uc?export=download&id={file_id}&confirm=t"
 
-url = f'https://drive.google.com/file/d/{file_id}/view?usp=sharing'
-output_path = "population.tif"
+# url = f'https://drive.google.com/file/d/{file_id}/view?usp=sharing'
+# output_path = "population.tif"
 
-gdown.download(url, output_path, quiet=False, fuzzy=True)
-print(f"File downloaded to: {output_path}")
+# gdown.download(url, output_path, quiet=False, fuzzy=True)
+# print(f"File downloaded to: {output_path}")
 
 
 
 
 # Open raster
-raster = rasterio.open("population.tif")
+
 
 
 API_KEY_XRAPID = "d6d75d6b87mshf0d57fd9d13aa4ap1e500bjsn56813c7d7156"
 
 app = FastAPI(title="NEO Data API", description="Returns NEO info, orbital data, and impact effects.", version="1.0")
+
+raster = None
+
+@app.on_event("startup")
+async def startup_event():
+    global raster
+    try:
+        file_id = "1Kxmd--ix7QcC7REDIh62ojuXrz7zqn5x"
+        gdown.download(f"https://drive.google.com/uc?id={file_id}", "population.tif", quiet=False, fuzzy=True)
+        raster = rasterio.open("population.tif")
+        print("✅ Raster loaded successfully")
+    except Exception as e:
+        print(f"❌ Failed to load raster: {e}")
+
 from fastapi.middleware.cors import CORSMiddleware
 
 origins = [
-    "http://localhost:3000",  # React dev server
-    "http://127.0.0.1:3000",
-    "https://astrogaurd.netlify.app",
+    # "http://localhost:3000",  # React dev server
+    # "http://127.0.0.1:3000",
+    # "https://astrogaurd.netlify.app",
+    "*"
 ]
 
 app.add_middleware(
@@ -277,6 +292,8 @@ def population_in_circle(raster_path, lon, lat, radius_km, density=False):
     radius_km : float : radius in kilometers
     density : bool : True if raster stores density/km², False if population counts
     """
+    if raster is None:
+        return 0.0
     raster = rasterio.open(raster_path)
 
     # Transform lon/lat -> raster CRS
